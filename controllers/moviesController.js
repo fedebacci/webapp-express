@@ -1,6 +1,21 @@
+const connection = require('../db/connection');
+
+
+
 const index =  (req, res) => {
-    res.json({
-        message: "Reading all movies"
+    const moviesSql = `
+        SELECT 
+            * 
+        
+        FROM \`movies\`
+    `;
+    connection.query(moviesSql, (error, results) => {
+        if (error) throw error;
+        
+        res.json({
+            message: "Reading all movies",
+            movies: results,
+        });
     });
 };
 
@@ -9,8 +24,21 @@ const index =  (req, res) => {
 const show =  (req, res) => {
     const { id } = req.params;
 
-    res.json({
-        message: `Reading movie: ${id}`
+    const movieSql = `
+        SELECT 
+            * 
+        
+        FROM \`movies\`
+
+        WHERE id = ?
+    `;
+    connection.query(movieSql, [id], (error, results) => {
+        if (error) throw error;
+        
+        res.json({
+            message: `Reading movie: ${id}`,
+            movie: results[0],
+        });
     });
 };
 
