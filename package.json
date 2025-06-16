@@ -4,7 +4,7 @@
   "description": "Backend per l'esercizio di riepilogo finale",
   "main": "app.js",
   "scripts": {
-    "test": "npm --watch app.js"
+    "dev": "node --watch app.js"
   },
   "keywords": [
     "Movies",
