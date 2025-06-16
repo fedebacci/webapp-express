@@ -2,6 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const moviesRouter = require('./routers/moviesRouter');
+const { errorsHandler } = require('./middlewares/errorsHandler');
+const { notFound } = require('./middlewares/notFound');
 
 
 
@@ -33,6 +35,12 @@ app.get("/", (req, res) => {
 
 // # ROUTERS
 app.use("/movies", moviesRouter);
+
+
+
+// # ERROR HANDLING MIDDLEWARES
+app.use(notFound);
+app.use(errorsHandler);
 
 
 
