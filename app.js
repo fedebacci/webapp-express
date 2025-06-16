@@ -1,6 +1,8 @@
 // # IMPORTS
 require('dotenv').config();
 const express = require('express');
+// - TEST
+const connection = require('./db/connection');
 
 
 
@@ -13,11 +15,22 @@ const host = APP_PORT ? `${APP_URL}:${APP_PORT}` : APP_URL;
 
 // # ROUTES
 app.get("/", (req, res) => {
-    res 
-        .json({
-            status: "success",
-            message: "Index request received",
+    // - TEST
+    const moviesSql = "SELECT * FROM `movies`";
+    connection.query(moviesSql, (error, results) => {
+        if (error) return res.status(500).json({ message: "Internal server error in /movies/"});
+
+        res.json({
+            message: "All movies received",
+            movies: results,
         });
+    });
+
+    // res 
+    //     .json({
+    //         status: "success",
+    //         message: "Index request received",
+    //     });
 });
 
 
