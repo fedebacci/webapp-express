@@ -10,6 +10,7 @@ const index = (req, res) => {
         FROM \`movies\`
     `;
     connection.query(moviesSql, (error, results) => {
+        console.debug(error);
         if (error) throw error;
 
         movies = results.map(result => {
@@ -40,6 +41,7 @@ const show = (req, res) => {
         WHERE id = ?
     `;
     connection.query(movieSql, [id], (error, results) => {
+        console.debug(error);
         if (error) throw error;
         if (!results.length) return res.status(404).json({ message: `Movie ${id} has not been found` });
 
@@ -55,6 +57,7 @@ const show = (req, res) => {
             WHERE reviews.movie_id = 3
         `;
         connection.query(movieReviwsSql, [id], (error, results) => {
+            console.debug(error);
             if (error) throw error;
 
             movie.reviews = results;

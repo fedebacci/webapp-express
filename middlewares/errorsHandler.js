@@ -10,9 +10,9 @@ const errorsHandler = (err, req, res, next) => {
         responseObject.data = err.data;
     };
     
-    console.debug("ERROR HANDLER PARTITO");
+    // console.debug("ERROR HANDLER PARTITO");
+    console.debug("ERROR HANDLER PARTITO: ", err);
     // console.debug("ERROR HANDLER PARTITO: ", responseObject);
-    // console.debug("ERROR HANDLER PARTITO: ", err);
 
     res
         .status(statusCode)
