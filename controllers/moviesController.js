@@ -11,10 +11,17 @@ const index = (req, res) => {
     `;
     connection.query(moviesSql, (error, results) => {
         if (error) throw error;
+
+        movies = results.map(result => {
+            return {
+                ...result,
+                image: formatImage(result.image)
+            };
+        });
         
         res.json({
             message: "Reading all movies",
-            movies: results,
+            movies,
         });
     });
 };
@@ -37,6 +44,7 @@ const show = (req, res) => {
         if (!results.length) return res.status(404).json({ message: `Movie ${id} has not been found` });
 
         const movie = results[0];
+        movie.image = formatImage(movie.image);
         
         const movieReviwsSql = `
             SELECT 
@@ -50,6 +58,7 @@ const show = (req, res) => {
             if (error) throw error;
 
             movie.reviews = results;
+            // console.debug(movie);
 
             res.json({
                 message: `Reading movie: ${id}`,
@@ -100,6 +109,18 @@ const destroy = (req, res) => {
         .json({
             message: `Destroy route successfully called for post: ${id}`
         });
+};
+
+
+
+// * 
+const { APP_URL, APP_PORT } = process.env;
+const host = APP_PORT ? `${APP_URL}:${APP_PORT}` : APP_URL;
+const formatImage = (image) => {
+    // console.log(image);
+    // console.log(host);
+
+    return `${host}/images/movies/${image}`;
 };
 
 

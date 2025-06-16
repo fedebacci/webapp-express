@@ -12,6 +12,11 @@ const host = APP_PORT ? `${APP_URL}:${APP_PORT}` : APP_URL;
 
 
 
+// # MIDDLEWARES
+app.use(express.static('public'));
+
+
+
 // # ROUTES
 app.get("/", (req, res) => {
     // - TEST gestione errori: Internal server error
