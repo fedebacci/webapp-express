@@ -3,7 +3,7 @@ const errorsHandler = (err, req, res, next) => {
     const errMessage = err.message ?? "Server error";
 
     const responseObject = {
-        error: errMessage
+        message: errMessage
     };
 
     if (err.data) {
