@@ -136,10 +136,10 @@ const destroy = (req, res) => {
 const { APP_URL, APP_PORT } = process.env;
 const host = APP_PORT ? `${APP_URL}:${APP_PORT}` : APP_URL;
 const formatImage = (image) => {
-    // console.log(image);
+    console.log(image);
     // console.log(host);
 
-    return `${host}/images/movies/${image}`;
+    return image ? `${host}/images/movies/${image}` : `${host}/images/movies/placeholder.jpg`;
 };
 
 
