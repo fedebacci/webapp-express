@@ -4,19 +4,26 @@ const connection = require('../db/connection');
 
 const index = (req, res) => {
     const moviesSql = `
-        SELECT 
-            * 
-        
-        FROM \`movies\`
+        SELECT
+            AVG(reviews.vote) AS average_vote,
+            movies.*
+
+            FROM \`movies\`
+
+            LEFT JOIN \`reviews\`
+            ON \`movies\`.\`id\` = \`reviews\`.\`movie_id\`
+
+            GROUP BY \`movies\`.\`id\`
     `;
     connection.query(moviesSql, (error, results) => {
         if (error) console.debug(error);
         if (error) throw error;
 
-        movies = results.map(result => {
+        const movies = results.map(movie => {
+            movie.average_vote = parseFloat(movie.average_vote);
             return {
-                ...result,
-                image: formatImage(result.image)
+                ...movie,
+                image: formatImage(movie.image)
             };
         });
         
@@ -36,12 +43,18 @@ const show = (req, res) => {
     if (isNaN(id)) return res.status(500).json({ message: `Internal server error regarding id: ${req.params.id}. Id must be a number.` });
 
     const movieSql = `
-        SELECT 
-            * 
-        
-        FROM \`movies\`
+        SELECT
+            AVG(reviews.vote) AS average_vote,
+            movies.*
 
-        WHERE id = ?
+            FROM \`movies\`
+
+            LEFT JOIN \`reviews\`
+            ON \`movies\`.\`id\` = \`reviews\`.\`movie_id\`
+
+            WHERE \`movies\`.\`id\` = ?
+
+            GROUP BY \`movies\`.\`id\`
     `;
     connection.query(movieSql, [id], (error, results) => {
         if (error) console.debug(error);
