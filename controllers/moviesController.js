@@ -54,7 +54,7 @@ const show = (req, res) => {
 
             FROM reviews
 
-            WHERE reviews.movie_id = 3
+            WHERE reviews.movie_id = ?
         `;
         connection.query(movieReviwsSql, [id], (error, results) => {
             if (error) console.debug(error);
