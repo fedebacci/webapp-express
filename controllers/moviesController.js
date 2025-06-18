@@ -136,8 +136,17 @@ const destroy = (req, res) => {
 const { APP_URL, APP_PORT } = process.env;
 const host = APP_PORT ? `${APP_URL}:${APP_PORT}` : APP_URL;
 const formatImage = (image) => {
-    console.log(image);
+    // console.log(image);
     // console.log(host);
+
+    // # TMP!
+    // * gestisco salvataggio di indirizzi internet come immagini, es: 
+    // * https://geogold.hu/wp-content/uploads/2023/10/Vertical-Placeholder-Image.jpg
+    // const debugImgUrl = "https://geogold.hu/wp-content/uploads/2023/10/Vertical-Placeholder-Image.jpg";
+    // console.debug(`debugImgUrl: ${debugImgUrl}`);
+    // console.debug(`debugImgUrl.slice(0,8): ${debugImgUrl.slice(0,8)}`);
+    // console.debug(`image: ${image}`);
+    if (image?.slice(0,8) === 'https://') return image;
 
     return image ? `${host}/images/movies/${image}` : `${host}/images/movies/placeholder.jpg`;
 };
