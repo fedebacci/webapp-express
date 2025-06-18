@@ -31,6 +31,9 @@ const index = (req, res) => {
 
 const show = (req, res) => {
     const id = parseInt(req.params.id);
+    // console.debug("req.params", req.params);
+    // console.debug(`id: ${id}`);
+    if (isNaN(id)) return res.status(500).json({ message: `Internal server error regarding id: ${req.params.id}. Id must be a number.` });
 
     const movieSql = `
         SELECT 
