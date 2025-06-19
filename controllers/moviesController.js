@@ -17,7 +17,7 @@ const index = (req, res) => {
     `;
     connection.query(moviesSql, (error, results) => {
         if (error) console.debug(error);
-        if (error) throw error;
+        if (error) return res.status(500).json({ message: `Internal server error`, error });
 
         const movies = results.map(movie => {
             movie.average_vote = parseFloat(movie.average_vote);
@@ -58,7 +58,7 @@ const show = (req, res) => {
     `;
     connection.query(movieSql, [id], (error, results) => {
         if (error) console.debug(error);
-        if (error) throw error;
+        if (error) return res.status(500).json({ message: `Internal server error`, error });
         if (!results.length) return res.status(404).json({ message: `Movie ${id} has not been found` });
 
         const movie = results[0];
@@ -74,7 +74,7 @@ const show = (req, res) => {
         `;
         connection.query(movieReviwsSql, [id], (error, results) => {
             if (error) console.debug(error);
-            if (error) throw error;
+            if (error) return res.status(500).json({ message: `Internal server error`, err });
 
             movie.reviews = results;
             // console.debug(movie);
@@ -86,6 +86,102 @@ const show = (req, res) => {
         });
     });
 };
+
+
+
+const storeReview = (req, res) => {
+    console.log("storeReview req.params", req.params);
+    console.log("storeReview req.body", req.body);
+
+    const { id: movie_id } = req.params;
+    const { name, vote, text } = req.body;
+
+
+
+    
+    const validationErrors = [
+
+    ];
+
+    if (!vote || vote < 1 || vote > 5) {
+        validationErrors.push({
+            field_name: "vote",
+            message: "Vote must be a number between 1 and 5"
+        });
+    };
+    if (!name || !name.length) {
+        validationErrors.push({
+            field_name: "name",
+            message: "Name cannot be empty"
+        });
+    };
+    if (!text || !text.length) {
+        validationErrors.push({
+            field_name: "text",
+            message: "Text cannot be empty"
+        });
+    };
+
+    if (validationErrors.length) {
+        return res
+            // *STATUS: BAD REQUEST
+            .status(403)
+            .json({
+                message: "Invalid payload",
+                data: validationErrors
+            });
+    };
+
+
+
+
+
+
+    const storeReviewSql = `
+        INSERT INTO \`reviews\`
+
+        (movie_id, name, vote, text) VALUES
+        (?, ?, ?, ?);
+    `;
+
+    connection.query(storeReviewSql, [movie_id, name, vote, text], (error, results) => {
+        if (error) console.debug(error);
+        if (error) return res.status(500).json({ message: `Internal server error`, error });
+
+        console.log(results);
+
+        res
+            .status(201)
+            .json({
+                message: `storeReview route successfully called for movie: ${movie_id}. New review is: #${results.insertId}`,
+                newReview: {
+                    id: results.insertId,
+                    movie_id,
+                    name, 
+                    vote, 
+                    text
+                }
+            });
+    });
+
+
+
+
+
+
+
+
+
+};
+
+
+
+
+
+
+
+
+
 
 
 
@@ -156,6 +252,8 @@ const formatImage = (image) => {
 module.exports = { 
     index,
     show,
+    storeReview,
+
     create,
     update,
     modify,
