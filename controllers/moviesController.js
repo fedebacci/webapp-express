@@ -172,19 +172,75 @@ const storeReview = (req, res) => {
 
 const create = (req, res) => {
 
-    // * ESEMPIO RAW JSON DATA
-    // {
-    //     "title": "Nome del film", 
-    //     "director": "Film director", 
-    //     "genre": "Film Genre", 
-    //     "release_year": 2025, 
-    //     "abstract": "Film description that can be very long", 
-    //     "filename": "https://geogold.hu/wp-content/uploads/2023/10/Vertical-Placeholder-Image.jpg"
-    // }
-
-
     const { title, director, genre, release_year, abstract } = req.body;
     const { filename } = req.file;
+    console.log("title:", title);
+    console.log("director:", director);
+    console.log("genre:", genre);
+    console.log("release_year:", release_year);
+    console.log("abstract:", abstract);
+    console.log("filename:", filename);
+
+
+
+
+
+    const validationErrors = [];
+
+    if (!title || !title.length) {
+        validationErrors.push({
+            field_name: "title",
+            message: "Title cannot be empty"
+        });
+    };
+    if (!director || !director.length) {
+        validationErrors.push({
+            field_name: "director",
+            message: "Director cannot be empty"
+        });
+    };
+    if (!genre || !genre.length) {
+        validationErrors.push({
+            field_name: "genre",
+            message: "Genre cannot be empty"
+        });
+    };
+    if (!release_year || release_year < 1895 || release_year > new Date().getFullYear()) {
+        validationErrors.push({
+            field_name: "release_year",
+            message: "Release year must be a number between 1985 (cinema's invention) and today."
+        });
+    };
+    if (!abstract || !abstract.length) {
+        validationErrors.push({
+            field_name: "abstract",
+            message: "Abstract cannot be empty"
+        });
+    };
+    // todo: decidere se dare errore o utilizzare placeholder di default
+    if (!filename || !filename.length) {
+        validationErrors.push({
+            field_name: "filename",
+            message: "Image cannot be empty"
+        });
+    };
+
+    if (validationErrors.length) {
+        return res
+            // *STATUS: BAD REQUEST
+            .status(403)
+            .json({
+                message: "Invalid payload",
+                data: validationErrors
+            });
+    };
+
+
+
+
+
+
+
     
     const createbookSql = `
         INSERT INTO \`movies\`
@@ -193,19 +249,18 @@ const create = (req, res) => {
         (?, ?, ?, ?, ?, ?);
     `;
 
-
-
     connection.query(createbookSql, [title, director, genre, release_year, abstract, filename], (error, results) => {
         if (error) console.debug(error);
         if (error) return res.status(500).json({ message: `Internal server error`, error });
 
         // console.debug(results);
 
+        // todo: capire se possibile restituire da qui il newMovie per la navigazione diretta alla pagina del nuovo film creato oppure se lasciar fare la richiesta a showmovie come adesso
         res
             .status(201)
             .json({
                 message: `Create route successfully called`,
-                id: results.insertId
+                newMovie_id: results.insertId
             });
     });
 
@@ -213,7 +268,15 @@ const create = (req, res) => {
     // res
     //     .status(201)
     //     .json({
-    //         message: `Create route successfully called`
+    //         message: `Create route successfully called`,
+    //         newMovie: {
+    //             title,
+    //             director,
+    //             genre,
+    //             release_year,
+    //             abstract,
+    //             filename
+    //         }
     //     });
 };
 
