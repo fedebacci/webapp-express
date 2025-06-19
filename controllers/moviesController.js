@@ -174,14 +174,6 @@ const create = (req, res) => {
 
     const { title, director, genre, release_year, abstract } = req.body;
     const { filename } = req.file;
-    console.log("title:", title);
-    console.log("director:", director);
-    console.log("genre:", genre);
-    console.log("release_year:", release_year);
-    console.log("abstract:", abstract);
-    console.log("filename:", filename);
-
-
 
 
 
@@ -237,19 +229,15 @@ const create = (req, res) => {
 
 
 
-
-
-
-
     
-    const createbookSql = `
+    const createMovieSql = `
         INSERT INTO \`movies\`
 
         (title, director, genre, release_year, abstract, image) VALUES
         (?, ?, ?, ?, ?, ?);
     `;
 
-    connection.query(createbookSql, [title, director, genre, release_year, abstract, filename], (error, results) => {
+    connection.query(createMovieSql, [title, director, genre, release_year, abstract, filename], (error, results) => {
         if (error) console.debug(error);
         if (error) return res.status(500).json({ message: `Internal server error`, error });
 
@@ -263,21 +251,6 @@ const create = (req, res) => {
                 newMovie_id: results.insertId
             });
     });
-
-
-    // res
-    //     .status(201)
-    //     .json({
-    //         message: `Create route successfully called`,
-    //         newMovie: {
-    //             title,
-    //             director,
-    //             genre,
-    //             release_year,
-    //             abstract,
-    //             filename
-    //         }
-    //     });
 };
 
 
