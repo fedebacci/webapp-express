@@ -2,6 +2,8 @@ const express = require('express');
 const moviesRouter = express.Router();
 const moviesController = require('../controllers/moviesController.js');
 
+const upload = require('../middlewares/multer.js');
+
 
 
 // # Rotte già gestite
@@ -14,7 +16,11 @@ moviesRouter.post('/:id/reviews', moviesController.storeReview);
 
 
 // # Rotte attualmente da gestire
-moviesRouter.post('/', moviesController.create);
+
+// * GESTIONE DELLE IMMAGINI CON MIDDLEWARE: MULTER
+// moviesRouter.post('/', moviesController.create);
+moviesRouter.post('/', upload.single('image'), moviesController.create);
+
 moviesRouter.put('/:id', moviesController.update);
 moviesRouter.patch('/:id', moviesController.modify);
 moviesRouter.delete('/:id', moviesController.destroy);

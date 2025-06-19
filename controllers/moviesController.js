@@ -97,11 +97,8 @@ const storeReview = (req, res) => {
     const { name, vote, text } = req.body;
 
 
-
     
-    const validationErrors = [
-
-    ];
+    const validationErrors = [];
 
     if (!vote || vote < 1 || vote > 5) {
         validationErrors.push({
@@ -134,9 +131,6 @@ const storeReview = (req, res) => {
 
 
 
-
-
-
     const storeReviewSql = `
         INSERT INTO \`reviews\`
 
@@ -148,7 +142,7 @@ const storeReview = (req, res) => {
         if (error) console.debug(error);
         if (error) return res.status(500).json({ message: `Internal server error`, error });
 
-        console.log(results);
+        // console.debug(results);
 
         res
             .status(201)
@@ -163,15 +157,6 @@ const storeReview = (req, res) => {
                 }
             });
     });
-
-
-
-
-
-
-
-
-
 };
 
 
@@ -186,11 +171,50 @@ const storeReview = (req, res) => {
 
 
 const create = (req, res) => {
-    res
-        .status(201)
-        .json({
-            message: `Create route successfully called`
-        });
+
+    // * ESEMPIO RAW JSON DATA
+    // {
+    //     "title": "Nome del film", 
+    //     "director": "Film director", 
+    //     "genre": "Film Genre", 
+    //     "release_year": 2025, 
+    //     "abstract": "Film description that can be very long", 
+    //     "filename": "https://geogold.hu/wp-content/uploads/2023/10/Vertical-Placeholder-Image.jpg"
+    // }
+
+
+    const { title, director, genre, release_year, abstract } = req.body;
+    const { filename } = req.file;
+    
+    const createbookSql = `
+        INSERT INTO \`movies\`
+
+        (title, director, genre, release_year, abstract, image) VALUES
+        (?, ?, ?, ?, ?, ?);
+    `;
+
+
+
+    connection.query(createbookSql, [title, director, genre, release_year, abstract, filename], (error, results) => {
+        if (error) console.debug(error);
+        if (error) return res.status(500).json({ message: `Internal server error`, error });
+
+        // console.debug(results);
+
+        res
+            .status(201)
+            .json({
+                message: `Create route successfully called`,
+                id: results.insertId
+            });
+    });
+
+
+    // res
+    //     .status(201)
+    //     .json({
+    //         message: `Create route successfully called`
+    //     });
 };
 
 
